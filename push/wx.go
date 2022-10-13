@@ -494,9 +494,18 @@ func sendMsg(id, message string) {
 		}
 		return
 	}
-	err := wx.PostText(id, message, "xxqg@xxqg")
-	if err != nil {
-		log.Errorln("发送客服消息错误" + err.Error())
+	////////////////////////////////////////除了接收其它人的uuid信息采用客服消息 ,其它均采用模板消息以方便复制//////////////////////////////
+	if strings.Contains(message, "通过则回复") {
+
+		err := wx.PostText(id, message, "xxqg@xxqg")
+		if err != nil {
+			log.Errorln("发送客服消息错误" + err.Error())
+		}
+
+	}
+	//err := wx.PostText(id, message, "xxqg@xxqg")
+	//if err != nil {
+		//log.Errorln("发送客服消息错误" + err.Error())
 		log.Warningln("开始尝试使用模板消息发送")
 		m := map[string]interface{}{
 			"data": map[string]string{
@@ -505,7 +514,7 @@ func sendMsg(id, message string) {
 		}
 		data, _ := json.Marshal(m)
 
-		_, err = wx.SendTemplateMessage(&mp.TemplateMessage{
+	_, err := wx.SendTemplateMessage(&mp.TemplateMessage{
 			ToUser:      id,
 			TemplateId:  conf.GetConfig().Wechat.NormalTempID,
 			URL:         "",
@@ -516,7 +525,7 @@ func sendMsg(id, message string) {
 			return
 		}
 		return
-	}
+	//}
 
 }
 
